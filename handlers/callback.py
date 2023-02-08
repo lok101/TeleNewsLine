@@ -1,8 +1,8 @@
 from aiogram.fsm.state import State
 from aiogram import types, Router, Bot
 
-from data_classes import NavButtonCallback
-from service import Create
+from navigations.data_classes import NavButtonCallback
+from navigations.menu import Create
 
 router = Router()
 

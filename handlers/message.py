@@ -2,7 +2,7 @@ from aiogram.filters import Command
 from aiogram.fsm.state import State
 from aiogram import types, Router, Bot
 
-from service import Create
+from navigations.menu import Create
 
 router = Router()
 
