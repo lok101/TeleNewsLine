@@ -4,17 +4,14 @@ from dataclasses import dataclass
 
 class FactoryDefaultButton(CallbackData, prefix="default"):
     page_name: str
-    button_is_back: bool
 
 
 class FactoryEmptyButton(CallbackData, prefix='empty'):
     page_name: str
-    button_is_back: bool
 
 
 class FactoryBackButton(CallbackData, prefix='back'):
     page_name: str
-    button_is_back: bool
 
 
 @dataclass

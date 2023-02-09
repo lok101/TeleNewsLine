@@ -20,4 +20,8 @@ async def handles_press_empty_button(callback: types.callback_query) -> None: ..
 
 
 @router.callback_query(FactoryBackButton.filter())
-async def handles_press_back_button(callback: types.callback_query) -> None: ...
+async def handles_press_back_button(
+        callback: types.callback_query,
+        callback_data: FactoryBackButton,
+        bot: Bot
+) -> None: ...
