@@ -10,17 +10,26 @@ class FactoryEmptyButton(CallbackData, prefix='empty'):
     page_name: str
 
 
+class FactoryNewChannelButton(CallbackData, prefix='new_channel'):
+    page_name: str
+
+
 class FactoryBackButton(CallbackData, prefix='back'):
     page_name: str
 
 
 @dataclass
-class DefaultMenuButton:
+class ButtonDefault:
     name: str
     callback: str
 
 
+class ButtonNewChannel:
+    name: str = 'Добавить канал.'
+    callback: str = 'new_channel'
+
+
 @dataclass
-class EmptyMenuButton:
-    name: str = '⬜️  ⬜️  ⬜️  ⬜️'
+class ButtonEmpty:
+    name: str = '➖                                                                                                  ➖'
     callback: str = 'empty_button'

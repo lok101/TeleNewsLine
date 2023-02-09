@@ -1,22 +1,19 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from navigations.control import controller
-from navigations.data_classes import FactoryBackButton, DefaultMenuButton, EmptyMenuButton
+from navigations.data_classes import FactoryBackButton, ButtonDefault, ButtonEmpty
 from navigations.pages import nav
 from navigations import control
 
 
 class Create:
-    is_back_button_click = False
-
-    def __int__(self, is_back_button_click=False):
-        self.is_back_button_click = is_back_button_click
+    is_back_button_click: bool = False
 
     async def start_menu(self, message, bot):
         """ Высылает стартовое меню в ответ на команду. """
         chat_id = message.chat.id
         user_id = message.from_user.id
-        keyboard = self.keyboard(
+        keyboard = self.default_keyboard(
             page_name='start_menu',
             user_id=user_id)
 
@@ -35,7 +32,7 @@ class Create:
 
         page_name = callback_data.page_name
 
-        keyboard = self.keyboard(
+        keyboard = self.default_keyboard(
             page_name=page_name,
             user_id=user_id)
 
@@ -47,15 +44,15 @@ class Create:
             parse_mode="Markdown"
         )
 
-    def keyboard(self, page_name, user_id):
+    def default_keyboard(self, page_name, user_id):
         """ Формирует клавиатуру для страницы с переданным адресом. """
         keyboard = InlineKeyboardBuilder()
-        buttons: list[DefaultMenuButton, EmptyMenuButton] = nav[page_name]['buttons']
+        buttons: list[ButtonDefault, ButtonEmpty] = nav[page_name]['buttons']
 
         for button in buttons:
             text = button.name
             callback = button.callback
-            builder = control.set_button_builder(button)
+            builder = control.set_button_builder[button.__class__.__name__]
 
             keyboard.button(text=text, callback_data=builder(page_name=callback))
 

@@ -16,6 +16,7 @@ class EnterChannelName(StatesGroup):
 @router.message(EnterChannelName.choosing_name)
 async def input_new_channel_name(message, bot, state):
     controller.channels.set_new_channel(message)
+    controller.stack.delete_last_position(message.from_user.id)
     await create.start_menu(message, bot)
     await state.clear()
 

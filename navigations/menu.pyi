@@ -6,28 +6,29 @@ from navigations.data_classes import FactoryEmptyButton, FactoryDefaultButton, F
 
 
 class Create:
-    @staticmethod
-    async def start_menu(message: message, bot: Bot): ...
+    is_back_button_click: bool = False
 
-    @staticmethod
+    async def start_menu(self: Create, message: message, bot: Bot) -> None: ...
+
+
     async def send_menu_on_button_click(
+            self: Create,
             callback: callback_query,
             callback_data: (FactoryDefaultButton, FactoryEmptyButton),
             bot: Bot
     ) -> None: ...
 
-    @staticmethod
     async def send_menu_on_back_button_click(
+            self: Create,
             callback: callback_query,
             callback_data: FactoryBackButton,
             bot: Bot
     ) -> None: ...
 
-    @staticmethod
-    def keyboard(
+    def default_keyboard(
+            self: Create,
             page_name: str,
             user_id: str
     ) -> KeyBuilder.as_markup: ...
 
-    @staticmethod
-    def add_back_button(keyboard: KeyBuilder, page_name: str, user_id: str) -> KeyBuilder: ...
+    def add_back_button(self: Create, keyboard: KeyBuilder, page_name: str, user_id: str) -> KeyBuilder: ...
