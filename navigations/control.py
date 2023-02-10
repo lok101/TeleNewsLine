@@ -1,7 +1,7 @@
 from navigations.transition_stack import TransitionStack
-from navigations.channels import UserChannels
 from navigations.data_classes import *
 
+from db.channels_methods import ChannelsDBController
 
 set_button_builder = {
     'ButtonDefault': FactoryDefaultButton,
@@ -11,18 +11,10 @@ set_button_builder = {
 }
 
 
-# def set_button_builder(button: (DefaultMenuButton, EmptyMenuButton)):
-#     if isinstance(button, DefaultMenuButton):
-#         return FactoryDefaultButton
-#     if isinstance(button, EmptyMenuButton):
-#         return FactoryEmptyButton
-
-
-
 class Control:
     def __init__(self):
         self.stack = TransitionStack()
-        self.channels = UserChannels()
+        self.channels = ChannelsDBController()
 
 
 controller = Control()
