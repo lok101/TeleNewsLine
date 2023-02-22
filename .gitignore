@@ -1,2 +1,5 @@
-/telethon/NewsLine.session
+/parce/NewsLine.session
 /test.py
+/parce/bot.session
+/parce/my_account.session
+/db/Users.db

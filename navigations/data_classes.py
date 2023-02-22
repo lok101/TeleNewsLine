@@ -1,3 +1,5 @@
+import re
+
 from aiogram.filters.callback_data import CallbackData
 from dataclasses import dataclass
 
