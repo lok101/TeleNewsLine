@@ -3,7 +3,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram import Router
 
 from navigations.menu import Create
-from navigations.control import controller
+from control import controller
 from parce.pyrogram_client import my_handler
 
 router = Router()

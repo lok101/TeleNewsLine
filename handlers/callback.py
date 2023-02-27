@@ -26,6 +26,7 @@ async def handler_press_new_channel_button(callback, callback_data, bot, state):
 
 
 @router.callback_query(FactoryBackButton.filter())
-async def handler_press_back_button(callback, callback_data, bot):
+async def handler_press_back_button(callback, callback_data, bot, state):
     create.is_back_button_click = True
     await create.send_menu_on_button_click(callback, callback_data, bot)
+    await state.clear()

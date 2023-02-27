@@ -1,5 +1,3 @@
-import re
-
 from aiogram.filters.callback_data import CallbackData
 from dataclasses import dataclass
 
@@ -21,17 +19,33 @@ class FactoryBackButton(CallbackData, prefix='back'):
 
 
 @dataclass
-class ButtonDefault:
+class BaseButton:
+    pass
+
+
+@dataclass
+class ButtonDefault(BaseButton):
     name: str
     callback: str
 
 
-class ButtonNewChannel:
+@dataclass
+class ButtonNewChannel(BaseButton):
     name: str = 'Добавить канал.'
     callback: str = 'new_channel'
 
 
 @dataclass
-class ButtonEmpty:
+class ButtonEmpty(BaseButton):
     name: str = '➖                                                                                                  ➖'
     callback: str = 'empty_button'
+
+
+class MenuPage:
+    def __init__(self, page_name: str, message_text: str, buttons: list[BaseButton]):
+        self.page_name = page_name
+        self.message_text = message_text
+        self.buttons = buttons
+
+    def get_page(self) -> dict:
+        return {self.page_name: self.__dict__}

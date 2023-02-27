@@ -1,9 +1,19 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from navigations.control import controller
-from navigations.data_classes import FactoryBackButton, ButtonDefault, ButtonEmpty
-from navigations.pages import nav
-from navigations import control
+from control import controller
+from navigations.data_classes import FactoryBackButton, ButtonDefault, ButtonEmpty, MenuPage
+import control
+from navigations.user_pages import menu_pages
+
+
+class BotMenu(dict):
+    def add_pages(self, pages: list[MenuPage]):
+        for page in pages:
+            self.update(page.get_page())
+
+
+bot_menu = BotMenu()
+bot_menu.add_pages(menu_pages)
 
 
 class Create:
@@ -47,7 +57,7 @@ class Create:
     def default_keyboard(self, page_name, user_id):
         """ Формирует клавиатуру для страницы с переданным адресом. """
         keyboard = InlineKeyboardBuilder()
-        buttons: list[ButtonDefault, ButtonEmpty] = nav[page_name]['buttons']
+        buttons: list[ButtonDefault, ButtonEmpty] = bot_menu[page_name]['buttons']
 
         for button in buttons:
             text = button.name
@@ -67,10 +77,10 @@ class Create:
             controller.stack.delete_last_position(user_id)
 
         previous_menu = controller.stack.get_last_position(user_id=user_id)
-        current_menu = nav[page_name]['current_menu']
+        page_name = bot_menu[page_name]['page_name']
 
-        if previous_menu is not None and current_menu != previous_menu:
+        if previous_menu is not None and page_name != previous_menu:
             keyboard.button(text='Назад', callback_data=FactoryBackButton(page_name=previous_menu))
-        controller.stack.set_new_last_position(user_id=user_id, position=current_menu)
+        controller.stack.set_new_last_position(user_id=user_id, position=page_name)
 
         return keyboard
