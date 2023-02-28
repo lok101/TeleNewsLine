@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, String, Column, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
-from db.base import Base, engine, session
+from db.base import Base, engine
 
 user_channel = Table(
     'user_channel', Base.metadata,
@@ -24,5 +24,3 @@ class Channel(Base):
 
 
 Base.metadata.create_all(engine)
-entry = session.get(User, 1731949302)
-print(entry)

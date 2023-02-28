@@ -6,6 +6,10 @@ class FactoryDefaultButton(CallbackData, prefix="default"):
     page_name: str
 
 
+class FactoryProductButton(CallbackData, prefix="product"):
+    page_name: str
+
+
 class FactoryEmptyButton(CallbackData, prefix='empty'):
     page_name: str
 
@@ -20,11 +24,18 @@ class FactoryBackButton(CallbackData, prefix='back'):
 
 @dataclass
 class BaseButton:
-    pass
+    name: str
+    callback: str
 
 
 @dataclass
 class ButtonDefault(BaseButton):
+    name: str
+    callback: str
+
+
+@dataclass
+class ButtonProduct(BaseButton):
     name: str
     callback: str
 
@@ -41,11 +52,6 @@ class ButtonEmpty(BaseButton):
     callback: str = 'empty_button'
 
 
-class MenuPage:
-    def __init__(self, page_name: str, message_text: str, buttons: list[BaseButton]):
-        self.page_name = page_name
-        self.message_text = message_text
-        self.buttons = buttons
-
-    def get_page(self) -> dict:
-        return {self.page_name: self.__dict__}
+@dataclass
+class ProductMenu:
+    pass

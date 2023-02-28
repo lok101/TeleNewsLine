@@ -7,6 +7,7 @@ set_button_builder = {
     'ButtonDefault': FactoryDefaultButton,
     'ButtonNewChannel': FactoryNewChannelButton,
     'ButtonEmpty': FactoryEmptyButton,
+    'ButtonProduct': FactoryProductButton,
 
 }
 
