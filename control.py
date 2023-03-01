@@ -8,6 +8,7 @@ set_button_builder = {
     'ButtonNewChannel': FactoryNewChannelButton,
     'ButtonEmpty': FactoryEmptyButton,
     'ButtonProduct': FactoryProductButton,
+    'ButtonNav': FactoryNavButton,
 
 }
 

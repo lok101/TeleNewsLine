@@ -24,6 +24,11 @@ class ControlNavigation:
         await create.send_menu_on_button_click(callback, callback_data, bot)
 
     @staticmethod
+    async def nav(callback, callback_data, bot):
+        controller.stack.replace_last_position(callback.from_user.id, callback_data.page_name)
+        await create.send_menu_on_button_click(callback, callback_data, bot)
+
+    @staticmethod
     async def new_channel(message, bot):
         controller.stack.delete_position_in_stack(message.from_user.id)
         await create.start_menu(message, bot)

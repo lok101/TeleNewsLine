@@ -1,9 +1,9 @@
-from navigations.bot_navigation_menu import MenuPage
+from navigations.constructor_of_pages import DefaultPage, ProductPage
 from navigations.data_classes import ButtonNewChannel, ButtonDefault, ButtonEmpty
 
 menu_pages = [
     # стартовая страница должна передаваться первой, для корректной работы кнопки "назад" в навигации.
-    MenuPage(
+    DefaultPage(
         page_name='start_menu',
         message_text='start_menu test text',
         buttons=[
@@ -11,19 +11,19 @@ menu_pages = [
             ButtonDefault('Мои каналы.', 'my_channels'),
         ]
     ),
-    MenuPage(
+    ProductPage(
         page_name='my_channels',
         message_text='my_channels test text',
 
     ),
-    MenuPage(
+    DefaultPage(
         page_name='new_channel',
         message_text='new_channel test text',
         buttons=[
 
         ]
     ),
-    MenuPage(
+    DefaultPage(
         page_name='my_profile',
         message_text='my_profile test text',
         buttons=[

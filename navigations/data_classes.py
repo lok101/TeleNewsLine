@@ -14,6 +14,10 @@ class FactoryEmptyButton(CallbackData, prefix='empty'):
     page_name: str
 
 
+class FactoryNavButton(CallbackData, prefix='nav'):
+    page_name: str
+
+
 class FactoryNewChannelButton(CallbackData, prefix='new_channel'):
     page_name: str
 
@@ -48,7 +52,13 @@ class ButtonNewChannel(BaseButton):
 
 @dataclass
 class ButtonEmpty(BaseButton):
-    name: str = '➖                                                                                                  ➖'
+    name: str = '➖                                                                                   ➖'
+    callback: str = 'empty_button'
+
+
+@dataclass
+class ButtonNav(BaseButton):
+    name: str = '⏺'
     callback: str = 'empty_button'
 
 

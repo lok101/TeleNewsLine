@@ -1,7 +1,7 @@
 from aiogram import Router
 
 from navigations.data_classes import FactoryDefaultButton, FactoryEmptyButton, FactoryBackButton, \
-    FactoryNewChannelButton, FactoryProductButton
+    FactoryNewChannelButton, FactoryProductButton, FactoryNavButton
 from navigations.menu_navigation import ControlNavigation
 from handlers.message import EnterChannelName
 
@@ -22,6 +22,11 @@ async def handler_press_default_button(callback, callback_data, bot):
 @router.callback_query(FactoryEmptyButton.filter())
 async def handler_press_empty_button(callback):
     await callback.answer()
+
+
+@router.callback_query(FactoryNavButton.filter())
+async def handler_press_nav_button(callback, callback_data, bot):
+    await page_navigation.nav(callback, callback_data, bot)
 
 
 @router.callback_query(FactoryNewChannelButton.filter())

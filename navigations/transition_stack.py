@@ -28,6 +28,10 @@ class TransitionStack:
         if isinstance(stack_for_current_user, deque):
             stack_for_current_user.pop()
 
+    def replace_last_position(self, user_id: str, position: str) -> None:
+        self.delete_position_in_stack(user_id)
+        self.add_position_in_stack(user_id, position)
+
     def get_previous_position_in_stack(self, user_id: str) -> str:
         stack_for_current_user = self.data.get(user_id, None)
         previous_position = menu_pages[0].page_name

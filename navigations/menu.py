@@ -2,7 +2,7 @@ from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from control import controller
-from navigations.bot_navigation_menu import MenuPage
+from navigations.constructor_of_pages import Page
 from navigations.bot_navigation_products import Product
 from navigations.data_classes import FactoryBackButton, BaseButton, FactoryDefaultButton
 import control
@@ -16,8 +16,9 @@ class BotMenu(dict):
         super().__init__(*args, **kwargs)
         self.add_pages(menu_pages)
         self.add_products(products)
+        pass
 
-    def add_pages(self, pages: list[MenuPage]):
+    def add_pages(self, pages: list[Page]):
         for page in pages:
             self.update(page.get_page())
 
@@ -104,7 +105,7 @@ class Create:
 
         if previous_menu is not None and page_name != previous_menu:
             keyboard.row(InlineKeyboardButton(
-                text='➖                                        Назад                                        ➖',
+                text='➖                                   Назад                                   ➖',
                 callback_data=FactoryBackButton(page_name=previous_menu).pack()))
 
     @staticmethod
@@ -114,5 +115,5 @@ class Create:
         start_page = menu_pages[0].page_name
         if page_name == start_page:
             keyboard.row(InlineKeyboardButton(
-                text='Мой профиль.',
+                text='➖                            Мой профиль.                            ➖',
                 callback_data=FactoryDefaultButton(page_name='my_profile').pack()))
