@@ -4,11 +4,10 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from control import controller
 from navigations.bot_navigation_menu import MenuPage
 from navigations.bot_navigation_products import Product
-from navigations.data_classes import FactoryBackButton, BaseButton
+from navigations.data_classes import FactoryBackButton, BaseButton, FactoryDefaultButton
 import control
 from navigations.user_pages import menu_pages
 from navigations.user_products import products
-import logging
 from logger import logger
 
 
@@ -91,13 +90,14 @@ class Create:
                 keyboard.row(InlineKeyboardButton(text=text, callback_data=builder(page_name=callback).pack()))
 
         self._add_back_button(keyboard, page_name, user_id)
+        self._add_my_profile_button(keyboard, page_name)
         logger.debug(controller.stack.data)
 
         return keyboard.as_markup()
 
     @staticmethod
     def _add_back_button(keyboard, page_name, user_id):
-        """ Добавляет кнопку назад в клавиатуру. """
+        """ Добавляет кнопку "назад" в клавиатуру. """
 
         previous_menu = controller.stack.get_previous_position_in_stack(user_id=user_id)
         page_name = bot_menu[page_name]['page_name']
@@ -107,4 +107,12 @@ class Create:
                 text='➖                                        Назад                                        ➖',
                 callback_data=FactoryBackButton(page_name=previous_menu).pack()))
 
-        return keyboard
+    @staticmethod
+    def _add_my_profile_button(keyboard, page_name):
+        """ Добавляет кнопку "мой профиль" в клавиатуру. """
+
+        start_page = menu_pages[0].page_name
+        if page_name == start_page:
+            keyboard.row(InlineKeyboardButton(
+                text='Мой профиль.',
+                callback_data=FactoryDefaultButton(page_name='my_profile').pack()))

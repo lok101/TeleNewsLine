@@ -9,9 +9,6 @@ menu_pages = [
         buttons=[
             ButtonNewChannel(),
             ButtonDefault('Мои каналы.', 'my_channels'),
-            ButtonEmpty(),
-            ButtonEmpty(),
-            ButtonDefault('Мой профиль.', 'my_profile'),
         ]
     ),
     MenuPage(
@@ -23,20 +20,14 @@ menu_pages = [
         page_name='new_channel',
         message_text='new_channel test text',
         buttons=[
-            ButtonEmpty(),
-            ButtonEmpty(),
-            ButtonEmpty(),
-            ButtonEmpty(),
+
         ]
     ),
     MenuPage(
         page_name='my_profile',
         message_text='my_profile test text',
         buttons=[
-            ButtonEmpty(),
-            ButtonEmpty(),
-            ButtonEmpty(),
-            ButtonEmpty(),
+
         ]
     ),
 

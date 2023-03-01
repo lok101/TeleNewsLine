@@ -2,28 +2,21 @@ from aiogram import Bot
 from aiogram.types import callback_query, message
 from aiogram.utils.keyboard import InlineKeyboardBuilder as KeyBuilder
 
-from navigations.data_classes import FactoryEmptyButton, FactoryDefaultButton, FactoryBackButton
+from navigations.data_classes import FactoryEmptyButton, FactoryDefaultButton
 
 
 class Create:
-    is_back_button_click: bool = False
 
-    async def start_menu(self: Create, message: message, bot: Bot) -> None: ...
+    async def start_menu(self, message: message, bot: Bot) -> None: ...
 
 
     async def send_menu_on_button_click(
-            self: Create,
+            self,
             callback: callback_query,
             callback_data: (FactoryDefaultButton, FactoryEmptyButton),
             bot: Bot
     ) -> None: ...
 
-    async def send_menu_on_back_button_click(
-            self: Create,
-            callback: callback_query,
-            callback_data: FactoryBackButton,
-            bot: Bot
-    ) -> None: ...
 
     def default_keyboard(
             self: Create,
@@ -31,4 +24,8 @@ class Create:
             user_id: str
     ) -> KeyBuilder.as_markup: ...
 
-    def _add_back_button(self: Create, keyboard: KeyBuilder, page_name: str, user_id: str) -> KeyBuilder: ...
+    @staticmethod
+    def _add_back_button(keyboard: KeyBuilder, page_name: str, user_id: str) -> KeyBuilder: ...
+
+    @staticmethod
+    def _add_my_profile_button(keyboard: KeyBuilder, page_name: str): ...
