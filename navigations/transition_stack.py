@@ -29,10 +29,12 @@ class TransitionStack:
             stack_for_current_user.pop()
 
     def replace_last_position(self, user_id: str, position: str) -> None:
+        """ Заменяет последнюю позицию в стеке на переданную. """
         self.delete_position_in_stack(user_id)
         self.add_position_in_stack(user_id, position)
 
     def get_previous_position_in_stack(self, user_id: str) -> str:
+        """ Возвращает предпоследнюю позицию стека. """
         stack_for_current_user = self.data.get(user_id, None)
         previous_position = menu_pages[0].page_name
         try:
@@ -43,5 +45,6 @@ class TransitionStack:
             return previous_position
 
     def clear_stack(self, user_id: str) -> None:
+        """ Очищает стек. """
         self.data.setdefault(user_id, deque())
         self.data[user_id].clear()

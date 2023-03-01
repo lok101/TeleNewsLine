@@ -1,7 +1,7 @@
 import math
 from typing import Union
 
-from navigations.data_classes import BaseButton, ProductMenu, ButtonEmpty, ButtonNav, ButtonDefault
+from navigations.data_classes import BaseButton, ProductMenu, ButtonEmpty, ButtonNav
 from navigations.user_products import products
 import settings
 
@@ -16,6 +16,9 @@ class DefaultPage(Page):
         self.message_text = message_text
         self.buttons = self._create_buttons_menu(buttons, page_name)
 
+    def get_page(self) -> dict:
+        return {self.page_name: self.__dict__}
+
     @staticmethod
     def _create_buttons_menu(buttons: Union[list[BaseButton] | ProductMenu], page_name: str):
         if settings.menu_height < len(buttons):
@@ -25,9 +28,6 @@ class DefaultPage(Page):
         for _ in range(settings.menu_height - len(buttons)):
             buttons.append(ButtonEmpty())
         return buttons
-
-    def get_page(self) -> dict:
-        return {self.page_name: self.__dict__}
 
 
 class ProductPage(Page):
@@ -41,6 +41,9 @@ class ProductPage(Page):
         self.buttons = self._load_buttons()
         self.pages = self._create_pages()
         self._add_buttons_in_pages()
+
+    def get_page(self) -> dict:
+        return self.pages
 
     def _load_buttons(self):
         buttons = [button.get_product_button() for button in products[self.page_name]]
@@ -91,6 +94,3 @@ class ProductPage(Page):
             return ButtonNav(name='▶️', callback=f'{self.page_name}{prefix}')
         else:
             return ButtonEmpty(name='⛔️')
-
-    def get_page(self) -> dict:
-        return self.pages
