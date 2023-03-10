@@ -1,6 +1,8 @@
 from collections import deque
 
-from navigations.user_pages import menu_pages
+from navigations.data_classes import SessionData
+from menu_structure.user_pages import menu_pages
+from exceptions import EmptyTransitionStack
 
 
 class TransitionStack:
@@ -12,30 +14,43 @@ class TransitionStack:
 
     # todo поправить работу стека при рестарте бота.
 
-    def add_position_in_stack(self, user_id: str, position: str) -> None:
+    def is_actual_menu_page(self, stack_key: int):
+        return bool(self.data.get(stack_key, False))
+
+    def add_position_in_stack(self, message_data: SessionData) -> None:
         """ Добавляет позицию в стек. """
-        self.data.setdefault(user_id, deque())
-        self.data[user_id].append(position)
+        self._create_stack(message_data)
+        self.data[message_data.stack_key].append(message_data.current_page_name)
 
-    def add_start_position_in_stack(self, user_id: str) -> None:
+    def add_start_position_in_stack(self, message_data: SessionData) -> None:
         """ Добавляет позицию стартового меню в стек. """
-        self.data.setdefault(user_id, deque())
-        self.data[user_id].append(menu_pages[0].page_name)
+        self._create_stack(message_data)
+        self.data[message_data.stack_key].append(menu_pages[0].page_name)
 
-    def delete_position_in_stack(self, user_id: str) -> None:
+    def delete_position_in_stack(self, message_data: SessionData) -> None:
         """ Удаляет последнюю позицию в стеке. """
-        stack_for_current_user = self.data.get(user_id, None)
-        if isinstance(stack_for_current_user, deque):
+        self._clear_stack(message_data)
+        stack_for_current_user = self.data.get(message_data.stack_key, None)
+        try:
             stack_for_current_user.pop()
+        except IndexError:
+            raise EmptyTransitionStack(
+                'Стек переходов пуст. '
+                'Пользователь работает с сообщением из предыдущей сессии.'
+            )
 
-    def replace_last_position(self, user_id: str, position: str) -> None:
+    def replace_last_position(self, message_data: SessionData) -> None:
         """ Заменяет последнюю позицию в стеке на переданную. """
-        self.delete_position_in_stack(user_id)
-        self.add_position_in_stack(user_id, position)
+        try:
+            self.delete_position_in_stack(message_data)
+        except EmptyTransitionStack:
+            pass
+        self.add_position_in_stack(message_data)
 
-    def get_previous_position_in_stack(self, user_id: str) -> str:
+    def get_previous_position_in_stack(self, message_data: SessionData) -> str:
         """ Возвращает предпоследнюю позицию стека. """
-        stack_for_current_user = self.data.get(user_id, None)
+        self._create_stack(message_data)
+        stack_for_current_user = self.data.get(message_data.stack_key, None)
         previous_position = menu_pages[0].page_name
         try:
             previous_position = stack_for_current_user[-2]
@@ -44,7 +59,13 @@ class TransitionStack:
         finally:
             return previous_position
 
-    def clear_stack(self, user_id: str) -> None:
+    def _clear_stack(self, message_data: SessionData) -> None:
         """ Очищает стек. """
-        self.data.setdefault(user_id, deque())
-        self.data[user_id].clear()
+        self._create_stack(message_data)
+        self.data[message_data.stack_key].clear()
+
+    def _create_stack(self, message_data: SessionData) -> None:
+        self.data.setdefault(message_data.stack_key, deque([menu_pages[0].page_name]))
+
+
+NAV_HISTORY = TransitionStack()

@@ -1,6 +1,7 @@
-from aiogram import types, Router, Bot
+from aiogram import types, Router
 from aiogram.fsm.context import FSMContext
 
+from my_bot import MyBot
 from navigations.data_classes import FactoryDefaultButton, FactoryEmptyButton, FactoryBackButton, \
     FactoryNewChannelButton, FactoryNavButton
 
@@ -8,10 +9,10 @@ router = Router()
 
 
 @router.callback_query(FactoryDefaultButton.filter())
-async def handler_press_default_button(
+async def handler_press_default_or_page_button(
         callback: types.callback_query,
         callback_data: FactoryDefaultButton,
-        bot: Bot,
+        bot: MyBot,
 ) -> None: ...
 
 
@@ -23,16 +24,16 @@ async def handler_press_empty_button(
 @router.callback_query(FactoryNavButton.filter())
 async def handler_press_nav_button(
         callback: types.callback_query,
-        callback_data: FactoryDefaultButton,
-        bot: Bot,
+        callback_data: FactoryNavButton,
+        bot: MyBot,
 ) -> None: ...
 
 
 @router.callback_query(FactoryNewChannelButton.filter())
 async def handler_press_new_channel_button(
         callback: types.callback_query,
-        callback_data: FactoryDefaultButton,
-        bot: Bot,
+        callback_data: FactoryNewChannelButton,
+        bot: MyBot,
         state: FSMContext,
 ) -> None: ...
 
@@ -41,6 +42,6 @@ async def handler_press_new_channel_button(
 async def handler_press_back_button(
         callback: types.callback_query,
         callback_data: FactoryBackButton,
-        bot: Bot,
+        bot: MyBot,
         state: FSMContext,
 ) -> None: ...

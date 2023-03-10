@@ -1,14 +1,15 @@
 import asyncio
 import os
 
-from aiogram import Bot, Dispatcher
+from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from handlers import message, callback
+from my_bot import MyBot
 
 
 async def bot_activate():
-    bot = Bot(token=os.environ['BOT_TOKEN'])
+    bot = MyBot(token=os.environ['BOT_TOKEN'])
     dp = Dispatcher(storage=MemoryStorage())
 
     dp.include_router(callback.router)

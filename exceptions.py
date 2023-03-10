@@ -1,0 +1,2 @@
+class EmptyTransitionStack(Exception):
+    pass

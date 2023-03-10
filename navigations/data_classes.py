@@ -1,28 +1,34 @@
 from aiogram.filters.callback_data import CallbackData
+from aiogram import types
+
 from dataclasses import dataclass
 
 
-class FactoryDefaultButton(CallbackData, prefix="default"):
+class BaseFactoryButton(CallbackData, prefix="base"):
     page_name: str
 
 
-class FactoryProductButton(CallbackData, prefix="product"):
+class FactoryDefaultButton(BaseFactoryButton, prefix="default"):
     page_name: str
 
 
-class FactoryEmptyButton(CallbackData, prefix='empty'):
+class FactoryProductButton(BaseFactoryButton, prefix="product"):
     page_name: str
 
 
-class FactoryNavButton(CallbackData, prefix='nav'):
+class FactoryEmptyButton(BaseFactoryButton, prefix='empty'):
     page_name: str
 
 
-class FactoryNewChannelButton(CallbackData, prefix='new_channel'):
+class FactoryNavButton(BaseFactoryButton, prefix='nav'):
     page_name: str
 
 
-class FactoryBackButton(CallbackData, prefix='back'):
+class FactoryNewChannelButton(BaseFactoryButton, prefix='new_channel'):
+    page_name: str
+
+
+class FactoryBackButton(BaseFactoryButton, prefix='back'):
     page_name: str
 
 
@@ -63,5 +69,14 @@ class ButtonNav(BaseButton):
 
 
 @dataclass
-class ProductMenu:
-    pass
+class SessionData:
+    user_id: int = 0
+    message_id: int = 0
+    chat_id: int = 0
+    stack_key: int = 0
+
+    text: str = None
+    reply_markup: types.reply_keyboard_markup = None
+
+    current_page_name: str = None
+    previous_page_name: str = None

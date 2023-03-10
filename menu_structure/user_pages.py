@@ -1,5 +1,5 @@
-from navigations.constructor_of_pages import DefaultPage, ProductPage
-from navigations.data_classes import ButtonNewChannel, ButtonDefault, ButtonEmpty
+from navigations.menu_constructor.pages_constructor import DefaultPage, ProductPage
+from navigations.data_classes import ButtonNewChannel, ButtonDefault
 
 menu_pages = [
     # стартовая страница должна передаваться первой, для корректной работы кнопки "назад" в навигации.

@@ -1,4 +1,4 @@
-from navigations.bot_navigation_products import Product
+from navigations.menu_constructor.products_constructor import Product
 
 products = {
     'my_channels': [

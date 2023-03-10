@@ -1,8 +1,7 @@
 import math
-from typing import Union
 
-from navigations.data_classes import BaseButton, ProductMenu, ButtonEmpty, ButtonNav
-from navigations.user_products import products
+from navigations.data_classes import BaseButton, ButtonEmpty, ButtonNav
+from menu_structure.user_products import products
 import settings
 
 
@@ -11,7 +10,7 @@ class Page:
 
 
 class DefaultPage(Page):
-    def __init__(self, page_name: str, message_text: str, buttons: Union[list[BaseButton] | ProductMenu]):
+    def __init__(self, page_name: str, message_text: str, buttons: list[BaseButton]):
         self.page_name = page_name
         self.message_text = message_text
         self.buttons = self._create_buttons_menu(buttons, page_name)
@@ -20,7 +19,7 @@ class DefaultPage(Page):
         return {self.page_name: self.__dict__}
 
     @staticmethod
-    def _create_buttons_menu(buttons: Union[list[BaseButton] | ProductMenu], page_name: str):
+    def _create_buttons_menu(buttons: list[BaseButton], page_name: str):
         if settings.menu_height < len(buttons):
             raise Exception(f'Превышен размер меню в {page_name}. '
                             f'Увеличьте допустимый размер меню в настройках '
