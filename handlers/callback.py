@@ -1,6 +1,6 @@
 from aiogram import Router
 
-from my_bot import MyBot
+from logger import logger
 from handlers.message import EnterChannelName
 from navigations.data_classes import FactoryDefaultButton, FactoryEmptyButton, FactoryBackButton, \
     FactoryNewChannelButton, FactoryProductButton, FactoryNavButton
@@ -18,16 +18,10 @@ async def handler_press_default_or_page_button(callback, callback_data, bot):
 
     NAV_HISTORY.add_position_in_stack(message_data)
 
+    message_data.set_session_and_message_data()
+
     await bot.edit_message_text(message_data)
-
-
-# @router.callback_query(FactoryProductButton.filter())
-# async def handler_press_default_button(callback, callback_data, bot: MyBot):
-#     message_data = MessageCreator(callback, callback_data)
-#
-#     NAV_HISTORY.stack.add_position_in_stack(message_data)
-#
-#     await bot.edit_message_text(message_data)
+    logger.debug(NAV_HISTORY.data)
 
 
 @router.callback_query(FactoryEmptyButton.filter())
@@ -41,6 +35,8 @@ async def handler_press_nav_button(callback, callback_data, bot):
 
     NAV_HISTORY.replace_last_position(message_data)
 
+    message_data.set_session_and_message_data()
+
     await bot.edit_message_text(message_data)
 
 
@@ -49,6 +45,8 @@ async def handler_press_new_channel_button(callback, callback_data, bot, state):
     message_data = MessageCreator(callback, callback_data)
 
     NAV_HISTORY.add_position_in_stack(message_data)
+
+    message_data.set_session_and_message_data()
 
     await bot.edit_message_text(message_data)
 
@@ -59,6 +57,8 @@ async def handler_press_new_channel_button(callback, callback_data, bot, state):
 async def handler_press_back_button(callback, callback_data, bot, state):
     message_data = MessageCreator(callback, callback_data)
     message_data.handel_back_button_press()
+
+    message_data.set_session_and_message_data()
 
     await bot.edit_message_text(message_data)
 

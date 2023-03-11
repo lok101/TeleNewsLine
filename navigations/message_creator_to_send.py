@@ -1,12 +1,14 @@
 from typing import Union
 
-from aiogram.types import InlineKeyboardButton
+from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from exceptions import EmptyTransitionStack
-from navigations.data_classes import *
-from navigations.menu_constructor.main import BotMenu
 from menu_structure.user_pages import menu_pages
+from logger import logger
+from navigations.data_classes import FactoryDefaultButton, SessionData, FactoryNewChannelButton, FactoryEmptyButton, \
+    FactoryProductButton, FactoryNavButton, BaseFactoryButton, BaseButton, FactoryBackButton
+from navigations.menu_constructor.main import BotMenu
 from navigations.transition_stack import NAV_HISTORY
 
 bot_menu = BotMenu()
@@ -24,45 +26,49 @@ class MessageCreator(SessionData):
     def __init__(
             self, tg_response_data: Union[types.CallbackQuery, types.Message], callback_data: BaseFactoryButton = None
     ):
-        self._set_session_data(tg_response_data, callback_data)
-        self._set_message_data()
+        self._set_response_data(tg_response_data, callback_data)
+        self._set_transition_stack_key()
+        self._set_current_menu()
 
     def handel_back_button_press(self):
         try:
-            NAV_HISTORY.replace_last_position(self)
+            NAV_HISTORY.delete_position_in_stack(self)
         except EmptyTransitionStack:
+            logger.debug('Нажатие на устаревшую кнопку "назад".')
             NAV_HISTORY.add_start_position_in_stack(self)
-            self.set_start_menu_in_current_page_name()
 
-    def set_start_menu_in_current_page_name(self):
-        self.current_page_name = menu_pages[0].page_name
-
-    def _set_session_data(self, tg_response_data, callback_data):
-        if isinstance(tg_response_data, types.Message):
-            self._set_data_for_message_type(tg_response_data)
-        elif isinstance(tg_response_data, types.CallbackQuery) and callback_data is not None:
-            self._set_data_for_callback_type(tg_response_data, callback_data)
-        else:
-            raise Exception('Неизвестный тип сообщения, или не передан callback_data.')
-
-    def _set_message_data(self):
+    def set_session_and_message_data(self):
+        self.user_id = self.message.from_user.id
+        self.message_id = self.message.message_id
+        self.chat_id = self.message.chat.id
+        self.previous_page_name = NAV_HISTORY.get_previous_position_in_stack(self)
         self.text = 'TEST MESSAGE'
         self.reply_markup = self._default_keyboard()
 
-    def _set_data_for_message_type(self, message: types.Message):
-        self.user_id = message.from_user.id
-        self.message_id = message.message_id
-        self.chat_id = message.chat.id
-        self.current_page_name = menu_pages[0].page_name
-        self.stack_key = int(f'{message.from_user.id}{message.message_id + 1}')
+    def _set_response_data(self, tg_response_data, callback_data):
+        if isinstance(self.tg_response_data, types.Message):
+            message = tg_response_data
+        else:
+            message = tg_response_data.message
+        self.message = message
+        self.tg_response_data = tg_response_data
+        self.callback_data = callback_data
 
-    def _set_data_for_callback_type(self, callback: types.CallbackQuery, callback_data: BaseFactoryButton = None):
-        self.user_id = callback.from_user.id
-        self.message_id = callback.message.message_id
-        self.chat_id = callback.message.chat.id
-        self.stack_key = int(f'{callback.from_user.id}{callback.message.message_id}')
-        self.current_page_name = callback_data.page_name
-        self.previous_page_name = NAV_HISTORY.get_previous_position_in_stack(self)
+    def _set_transition_stack_key(self):
+        if isinstance(self.tg_response_data, types.Message):
+            user_id, message_id = self.tg_response_data.from_user.id, self.tg_response_data.message_id + 1
+        elif isinstance(self.tg_response_data, types.CallbackQuery) and self.callback_data is not None:
+            user_id, message_id = self.tg_response_data.from_user.id, self.tg_response_data.message.message_id
+        else:
+            raise Exception('Неизвестный тип сообщения, или не передан callback_data.')
+
+        self.stack_key = int(f'{user_id}{message_id}')
+
+    def _set_current_menu(self):
+        if self.callback_data is not None:
+            self.current_page_name = self.callback_data.page_name
+        else:
+            self.current_page_name = menu_pages[0].page_name
 
     def _default_keyboard(self):
         """ Формирует клавиатуру для страницы с переданным адресом. """
@@ -79,14 +85,18 @@ class MessageCreator(SessionData):
                     callback = btn.callback
                     builder = set_button_builder[btn.__class__.__name__]
 
-                    btns.append(InlineKeyboardButton(text=text, callback_data=builder(page_name=callback).pack()))
+                    btns.append(
+                        types.InlineKeyboardButton(text=text, callback_data=builder(page_name=callback).pack())
+                    )
                 self.keyboard.row(*btns)
             else:
                 text = button.name
                 callback = button.callback
                 builder = set_button_builder[button.__class__.__name__]
 
-                self.keyboard.row(InlineKeyboardButton(text=text, callback_data=builder(page_name=callback).pack()))
+                self.keyboard.row(
+                    types.InlineKeyboardButton(text=text, callback_data=builder(page_name=callback).pack())
+                )
 
         self._add_back_button()
         self._add_my_profile_button()
@@ -96,10 +106,9 @@ class MessageCreator(SessionData):
     def _add_back_button(self):
         """ Добавляет кнопку "назад" в клавиатуру. """
 
-        page_name = bot_menu[self.current_page_name]['page_name']
         name_start_menu = menu_pages[0].page_name
-        if page_name != name_start_menu:
-            self.keyboard.row(InlineKeyboardButton(
+        if self.current_page_name != name_start_menu:
+            self.keyboard.row(types.InlineKeyboardButton(
                 text='➖                                   Назад                                   ➖',
                 callback_data=FactoryBackButton(page_name=self.previous_page_name).pack()))
 
@@ -108,6 +117,6 @@ class MessageCreator(SessionData):
 
         start_page = menu_pages[0].page_name
         if self.current_page_name == start_page:
-            self.keyboard.row(InlineKeyboardButton(
+            self.keyboard.row(types.InlineKeyboardButton(
                 text='➖                            Мой профиль.                            ➖',
                 callback_data=FactoryDefaultButton(page_name='my_profile').pack()))

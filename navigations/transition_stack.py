@@ -1,5 +1,6 @@
 from collections import deque
 
+from logger import logger
 from navigations.data_classes import SessionData
 from menu_structure.user_pages import menu_pages
 from exceptions import EmptyTransitionStack
@@ -29,22 +30,21 @@ class TransitionStack:
 
     def delete_position_in_stack(self, message_data: SessionData) -> None:
         """ Удаляет последнюю позицию в стеке. """
-        self._clear_stack(message_data)
+        self._create_stack(message_data)
         stack_for_current_user = self.data.get(message_data.stack_key, None)
         try:
             stack_for_current_user.pop()
         except IndexError:
-            raise EmptyTransitionStack(
-                'Стек переходов пуст. '
-                'Пользователь работает с сообщением из предыдущей сессии.'
-            )
+            message = 'Стек переходов пуст. Пользователь работает с сообщением из предыдущей сессии.'
+            logger.debug(message)
+            raise EmptyTransitionStack(message)
 
     def replace_last_position(self, message_data: SessionData) -> None:
         """ Заменяет последнюю позицию в стеке на переданную. """
         try:
             self.delete_position_in_stack(message_data)
         except EmptyTransitionStack:
-            pass
+            logger.debug('Нажатие на устаревшую кнопку навигации.')
         self.add_position_in_stack(message_data)
 
     def get_previous_position_in_stack(self, message_data: SessionData) -> str:
@@ -55,7 +55,7 @@ class TransitionStack:
         try:
             previous_position = stack_for_current_user[-2]
         except IndexError:
-            pass
+            logger.debug('В стеке нет предыдущей позиции. Возвращена стартовая страница.')
         finally:
             return previous_position
 

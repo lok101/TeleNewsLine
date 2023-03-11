@@ -1,3 +1,5 @@
+from typing import Union
+
 from aiogram.filters.callback_data import CallbackData
 from aiogram import types
 
@@ -70,6 +72,10 @@ class ButtonNav(BaseButton):
 
 @dataclass
 class SessionData:
+    tg_response_data: Union[types.CallbackQuery, types.Message] = None
+    callback_data: BaseFactoryButton = None
+    message: types.Message = None
+
     user_id: int = 0
     message_id: int = 0
     chat_id: int = 0
